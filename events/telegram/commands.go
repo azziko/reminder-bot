@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"remindbot/lib/e"
 	"remindbot/storage"
+	"strconv"
 	"strings"
 )
 
@@ -73,7 +74,7 @@ func (p *Processor) savePage(chatID int, pURL string, username string) error {
 	if err != nil {
 		return e.Wrap("Failes to check for existence", err)
 	}
-	if IfExists {
+	if !IfExists {
 		return p.tg.SendMessage(chatID, msgAlreadyExists)
 	}
 
@@ -108,8 +109,8 @@ func (p *Processor) sendAll(chatID int, username string) error {
 	}
 
 	URLs := ""
-	for _, p := range pages {
-		URLs += p.URL + "\n"
+	for i, p := range pages {
+		URLs += strconv.Itoa(i+1) + ") " + p.URL + "\n\n"
 	}
 
 	if err := p.tg.SendMessage(chatID, URLs); err != nil {
