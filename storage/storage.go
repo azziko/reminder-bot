@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"remindbot/lib/e"
-	"time"
 )
 
 type Storage interface {
@@ -19,7 +18,7 @@ type Storage interface {
 type Page struct {
 	URL       string
 	UserName  string
-	CreatedAt time.Time
+	CreatedAt string
 }
 
 func (p *Page) Hash() (string, error) {

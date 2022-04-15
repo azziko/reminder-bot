@@ -7,6 +7,7 @@ import (
 	"remindbot/storage"
 	"strconv"
 	"strings"
+	"time"
 )
 
 //messages
@@ -16,9 +17,8 @@ const (
 	I can also provide you with a list of all saved links you currently have. 
 	
 	Here is a list of all commands: 
-	/rnd gets you a random link
-	/all gets you all links you have got 
-	/dlt + specify url (like so: /del http://example.com/) removes a url from database 
+	/rnd gets you a random link 📨
+	/all gets you all links you have got 📃
 
 	p.s keep in mind that a link is instantly deleted when you retreive it 
 	
@@ -66,15 +66,16 @@ func (p *Processor) doCmd(text string, chatID int, username string) error {
 
 func (p *Processor) savePage(chatID int, pURL string, username string) error {
 	page := &storage.Page{
-		URL:      pURL,
-		UserName: username,
+		URL:       pURL,
+		UserName:  username,
+		CreatedAt: time.Now().Format("2006-01-02 15:04:05"),
 	}
 
 	IfExists, err := p.storage.IfExists(page)
 	if err != nil {
 		return e.Wrap("Failes to check for existence", err)
 	}
-	if !IfExists {
+	if IfExists {
 		return p.tg.SendMessage(chatID, msgAlreadyExists)
 	}
 
@@ -110,7 +111,7 @@ func (p *Processor) sendAll(chatID int, username string) error {
 
 	URLs := ""
 	for i, p := range pages {
-		URLs += strconv.Itoa(i+1) + ") " + p.URL + "\n\n"
+		URLs += strconv.Itoa(i+1) + ") " + p.URL + "\n" + "📅 Saved at: " + p.CreatedAt + "\n\n"
 	}
 
 	if err := p.tg.SendMessage(chatID, URLs); err != nil {

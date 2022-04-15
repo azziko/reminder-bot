@@ -3,6 +3,7 @@ package files
 import (
 	"encoding/gob"
 	"errors"
+	"fmt"
 	"math/rand"
 	"os"
 	"path/filepath"
@@ -138,17 +139,20 @@ func (s Storage) Remove(p *storage.Page) error {
 }
 
 func (s Storage) IfExists(p *storage.Page) (bool, error) {
-	fm, err := fileName(p)
+	fileName, err := fileName(p)
 	if err != nil {
-		return false, e.Wrap("failed to hash", err)
+		return false, e.Wrap("can't check if file exists", err)
 	}
 
-	fp := filepath.Join(s.basePath, p.UserName, fm)
+	path := filepath.Join(s.basePath, p.UserName, fileName)
 
-	if _, err := os.Stat(fp); err != os.ErrNotExist {
+	switch _, err = os.Stat(path); {
+	case errors.Is(err, os.ErrNotExist):
 		return false, nil
-	} else if err != nil {
-		return false, e.Wrap("failed to check for file existence", err)
+	case err != nil:
+		msg := fmt.Sprintf("can't check if file %s exists", path)
+
+		return false, e.Wrap(msg, err)
 	}
 
 	return true, nil
