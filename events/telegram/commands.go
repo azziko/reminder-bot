@@ -60,7 +60,7 @@ func (p *Processor) doCmd(text string, chatID int, username string) error {
 		return p.sendHello(chatID)
 
 	default:
-		return p.tg.SendMessage(chatID, msgUnknownCommand)
+		return p.tg.SendMessage(chatID, msgUnknownCommand, "false")
 	}
 }
 
@@ -76,14 +76,14 @@ func (p *Processor) savePage(chatID int, pURL string, username string) error {
 		return e.Wrap("Failes to check for existence", err)
 	}
 	if IfExists {
-		return p.tg.SendMessage(chatID, msgAlreadyExists)
+		return p.tg.SendMessage(chatID, msgAlreadyExists, "false")
 	}
 
 	if err := p.storage.Save(page); err != nil {
 		return e.Wrap("failed to save a message", err)
 	}
 
-	if err := p.tg.SendMessage(chatID, msgSaved); err != nil {
+	if err := p.tg.SendMessage(chatID, msgSaved, "false"); err != nil {
 		return e.Wrap("failed to save a message", err)
 	}
 
@@ -93,10 +93,10 @@ func (p *Processor) savePage(chatID int, pURL string, username string) error {
 func (p *Processor) sendRandom(chatID int, username string) error {
 	page, err := p.storage.PickRandom(username)
 	if err != nil {
-		return p.tg.SendMessage(chatID, msgNothingSaved)
+		return p.tg.SendMessage(chatID, msgNothingSaved, "false")
 	}
 
-	if err := p.tg.SendMessage(chatID, page.URL); err != nil {
+	if err := p.tg.SendMessage(chatID, page.URL, "false"); err != nil {
 		return e.Wrap("failed to send message", err)
 	}
 
@@ -106,7 +106,7 @@ func (p *Processor) sendRandom(chatID int, username string) error {
 func (p *Processor) sendAll(chatID int, username string) error {
 	pages, err := p.storage.PickAll(username)
 	if err != nil {
-		return p.tg.SendMessage(chatID, msgNothingSaved)
+		return p.tg.SendMessage(chatID, msgNothingSaved, "true")
 	}
 
 	URLs := ""
@@ -114,7 +114,7 @@ func (p *Processor) sendAll(chatID int, username string) error {
 		URLs += strconv.Itoa(i+1) + ") " + p.URL + "\n" + "📅 Saved at: " + p.CreatedAt + "\n\n"
 	}
 
-	if err := p.tg.SendMessage(chatID, URLs); err != nil {
+	if err := p.tg.SendMessage(chatID, URLs, "true"); err != nil {
 		return e.Wrap("failed to get a list", err)
 	}
 
@@ -122,11 +122,11 @@ func (p *Processor) sendAll(chatID int, username string) error {
 }
 
 func (p *Processor) sendHelp(chatID int) error {
-	return p.tg.SendMessage(chatID, msgHelp)
+	return p.tg.SendMessage(chatID, msgHelp, "false")
 }
 
 func (p *Processor) sendHello(chatID int) error {
-	return p.tg.SendMessage(chatID, msgHello)
+	return p.tg.SendMessage(chatID, msgHello, "false")
 }
 
 func isAddCmd(t string) bool {

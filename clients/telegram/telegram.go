@@ -48,10 +48,11 @@ func (c *Client) Update(offset int, limit int) ([]Update, error) {
 	return res.Result, nil
 }
 
-func (c *Client) SendMessage(chatID int, text string) error {
+func (c *Client) SendMessage(chatID int, text string, preview string) error {
 	query := url.Values{}
 	query.Add("chat_id", strconv.Itoa(chatID))
 	query.Add("text", text)
+	query.Add("disable_web_page_preview", preview)
 
 	_, err := c.doRequest(sendMessageMethod, query)
 	if err != nil {
