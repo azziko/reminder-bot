@@ -2,6 +2,7 @@ package telegram
 
 import (
 	"log"
+	"math/rand"
 	"net/url"
 	"remindbot/lib/e"
 	"remindbot/storage"
@@ -87,6 +88,8 @@ func (p *Processor) savePage(chatID int, pURL string, username string) error {
 		return e.Wrap("failed to save a message", err)
 	}
 
+	go remind(p, p.storage, username, chatID)
+
 	return nil
 }
 
@@ -137,4 +140,17 @@ func isUrl(t string) bool {
 	u, err := url.Parse(t)
 
 	return err == nil && u.Host != ""
+}
+
+//reminder
+func remind(p *Processor, s storage.Storage, username string, ChatID int) {
+	rand.Seed(time.Now().UnixNano())
+	n := rand.Intn((24-5)+1) + 5
+
+	time.Sleep(time.Duration(n) * time.Hour)
+	page, _ := s.PickRandom(username)
+	resp := "📬 Look what I brought you today: \n\n" + page.URL
+
+	p.tg.SendMessage(ChatID, resp, "false")
+	p.storage.Remove(page)
 }
