@@ -4,7 +4,7 @@ Have you ever forgotten to read an article you saved? Well, you are not alone th
 In fact, my telegram is full of different links I leave for "tomorrow", but never actually open them. Since I use telegram a lot, I decided to manage those link within the platform and created the reminder bot. The bot serves for both managing links and reminding of them randomly within 24 hours.
 
 ## Features
-The working principle is quite straightforward. If you found an interesting article(or pretty much any link starting with http(s)://) and can't or don't want to read it for right now, you simply copy the URL to bot so it can remind you of it later. 
+The working principle is quite straightforward. If you found an interesting article(or pretty much any link starting with http(s)://) and can't or don't want to read it right now, you simply copy the URL to bot so it can remind you of it later. 
 
 ![example](https://user-images.githubusercontent.com/101587881/163728629-67e7a409-7dc6-4d23-b87a-5f76b3822fe1.png)
 
